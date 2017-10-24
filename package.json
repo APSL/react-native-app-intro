@@ -1,8 +1,7 @@
 {
   "name": "react-native-app-intro",
   "version": "1.1.5",
-  "description":
-    "react-native-app-intro is a react native plugin implementing a parallax effect welcome page using base on react-native-swiper , similar to the one found in Google's app like Sheet, Drive, Docs...",
+  "description": "react-native-app-intro is a react native plugin implementing a parallax effect welcome page using base on react-native-swiper , similar to the one found in Google's app like Sheet, Drive, Docs...",
   "main": "AppIntro.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -28,7 +27,9 @@
   },
   "homepage": "https://github.com/fuyaode/react-native-app-intro#readme",
   "dependencies": {
+    "@types/prop-types": "^15.5.2",
     "assign-deep": "^0.4.5",
+    "prop-types": "^15.6.0",
     "react-native-swiper": "^1.5.13"
   }
 }

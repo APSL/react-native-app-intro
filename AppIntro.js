@@ -1,5 +1,6 @@
-import assign from 'assign-deep'
-import React, { Component, PropTypes } from 'react'
+import assign from 'assign-deep';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   StatusBar,
   StyleSheet,
@@ -10,14 +11,14 @@ import {
   Dimensions,
   Image,
   Platform
-} from 'react-native'
-import Swiper from 'react-native-swiper'
-import DoneButton from './components/DoneButton'
-import SkipButton from './components/SkipButton'
-import RenderDots from './components/Dots'
+} from 'react-native';
+import Swiper from 'react-native-swiper';
+import DoneButton from './components/DoneButton';
+import SkipButton from './components/SkipButton';
+import RenderDots from './components/Dots';
 
-const windowsWidth = Dimensions.get('window').width
-const windowsHeight = Dimensions.get('window').height
+const windowsWidth = Dimensions.get('window').width;
+const windowsHeight = Dimensions.get('window').height;
 
 const defaulStyles = {
   header: {
@@ -102,64 +103,66 @@ const defaulStyles = {
     justifyContent: 'center',
     alignItems: 'center'
   }
-}
+};
 
 export default class AppIntro extends Component {
   constructor(props) {
-    super(props)
+    super(props);
 
-    this.styles = StyleSheet.create(assign({}, defaulStyles, props.customStyles))
+    this.styles = StyleSheet.create(
+      assign({}, defaulStyles, props.customStyles)
+    );
 
     this.state = {
       skipFadeOpacity: new Animated.Value(1),
       doneFadeOpacity: new Animated.Value(0),
       nextOpacity: new Animated.Value(1),
       parallax: new Animated.Value(0)
-    }
+    };
   }
 
   onNextBtnClick = context => {
     if (context.state.isScrolling || context.state.total < 2) {
-      return
+      return;
     }
-    const state = context.state
-    const diff = (context.props.loop ? 1 : 0) + 1 + context.state.index
-    let x = 0
+    const state = context.state;
+    const diff = (context.props.loop ? 1 : 0) + 1 + context.state.index;
+    let x = 0;
     if (state.dir === 'x') {
-      x = diff * state.width
+      x = diff * state.width;
     }
     if (Platform.OS === 'ios') {
-      context.refs.scrollView.scrollTo({ y: 0, x })
+      context.refs.scrollView.scrollTo({ y: 0, x });
     } else {
-      context.refs.scrollView.setPage(diff)
+      context.refs.scrollView.setPage(diff);
       context.onScrollEnd({
         nativeEvent: {
           position: diff
         }
-      })
+      });
     }
-    this.props.onNextBtnClick(context.state.index)
-  }
+    this.props.onNextBtnClick(context.state.index);
+  };
 
   setDoneBtnOpacity = value => {
-    Animated.timing(this.state.doneFadeOpacity, { toValue: value }).start()
-  }
+    Animated.timing(this.state.doneFadeOpacity, { toValue: value }).start();
+  };
 
   setSkipBtnOpacity = value => {
-    Animated.timing(this.state.skipFadeOpacity, { toValue: value }).start()
-  }
+    Animated.timing(this.state.skipFadeOpacity, { toValue: value }).start();
+  };
 
   setNextOpacity = value => {
-    Animated.timing(this.state.nextOpacity, { toValue: value }).start()
-  }
+    Animated.timing(this.state.nextOpacity, { toValue: value }).start();
+  };
   getTransform = (index, offset, level) => {
-    const isFirstPage = index === 0
-    const statRange = isFirstPage ? 0 : windowsWidth * (index - 1)
-    const endRange = isFirstPage ? windowsWidth : windowsWidth * index
-    const startOpacity = isFirstPage ? 1 : 0
-    const endOpacity = isFirstPage ? 1 : 1
-    const leftPosition = isFirstPage ? 0 : windowsWidth / 3
-    const rightPosition = isFirstPage ? -windowsWidth / 3 : 0
+    const isFirstPage = index === 0;
+    const statRange = isFirstPage ? 0 : windowsWidth * (index - 1);
+    const endRange = isFirstPage ? windowsWidth : windowsWidth * index;
+    const startOpacity = isFirstPage ? 1 : 0;
+    const endOpacity = isFirstPage ? 1 : 1;
+    const leftPosition = isFirstPage ? 0 : windowsWidth / 3;
+    const rightPosition = isFirstPage ? -windowsWidth / 3 : 0;
     const transform = [
       {
         transform: [
@@ -180,27 +183,27 @@ export default class AppIntro extends Component {
           outputRange: [startOpacity, endOpacity]
         })
       }
-    ]
+    ];
     return {
       transform
-    }
-  }
+    };
+  };
 
   renderPagination = (index, total, context) => {
-    let isDoneBtnShow
-    let isSkipBtnShow
+    let isDoneBtnShow;
+    let isSkipBtnShow;
     if (index === total - 1) {
-      this.setDoneBtnOpacity(1)
-      this.setSkipBtnOpacity(0)
-      this.setNextOpacity(0)
-      isDoneBtnShow = true
-      isSkipBtnShow = false
+      this.setDoneBtnOpacity(1);
+      this.setSkipBtnOpacity(0);
+      this.setNextOpacity(0);
+      isDoneBtnShow = true;
+      isSkipBtnShow = false;
     } else {
-      this.setDoneBtnOpacity(0)
-      this.setSkipBtnOpacity(1)
-      this.setNextOpacity(1)
-      isDoneBtnShow = false
-      isSkipBtnShow = true
+      this.setDoneBtnOpacity(0);
+      this.setSkipBtnOpacity(1);
+      this.setNextOpacity(1);
+      isDoneBtnShow = false;
+      isSkipBtnShow = true;
     }
     return (
       <View style={[this.styles.paginationContainer]}>
@@ -233,17 +236,17 @@ export default class AppIntro extends Component {
           <View style={this.styles.btnContainer} />
         )}
       </View>
-    )
-  }
+    );
+  };
 
   renderBasicSlidePage = (
     index,
     { title, description, img, imgStyle, backgroundColor, fontColor, level }
   ) => {
-    const AnimatedStyle1 = this.getTransform(index, 10, level)
-    const AnimatedStyle2 = this.getTransform(index, 0, level)
-    const AnimatedStyle3 = this.getTransform(index, 15, level)
-    const imgSource = typeof img === 'string' ? { uri: img } : img
+    const AnimatedStyle1 = this.getTransform(index, 10, level);
+    const AnimatedStyle2 = this.getTransform(index, 0, level);
+    const AnimatedStyle3 = this.getTransform(index, 15, level);
+    const imgSource = typeof img === 'string' ? { uri: img } : img;
     const pageView = (
       <View
         style={[this.styles.slide, { backgroundColor }]}
@@ -266,53 +269,53 @@ export default class AppIntro extends Component {
           </Animated.View>
         </View>
       </View>
-    )
-    return pageView
-  }
+    );
+    return pageView;
+  };
 
   renderChild = (children, pageIndex, index) => {
-    const level = children.props.level || 0
-    const { transform } = this.getTransform(pageIndex, 10, level)
-    const root = children.props.children
-    let nodes = children
+    const level = children.props.level || 0;
+    const { transform } = this.getTransform(pageIndex, 10, level);
+    const root = children.props.children;
+    let nodes = children;
     if (Array.isArray(root)) {
       nodes = root.map((node, i) =>
         this.renderChild(node, pageIndex, `${index}_${i}`)
-      )
+      );
     }
-    let animatedChild = children
+    let animatedChild = children;
     if (level !== 0) {
       animatedChild = (
         <Animated.View key={index} style={[children.props.style, transform]}>
           {nodes}
         </Animated.View>
-      )
+      );
     } else {
       animatedChild = (
         <View key={index} style={children.props.style}>
           {nodes}
         </View>
-      )
+      );
     }
-    return animatedChild
-  }
+    return animatedChild;
+  };
 
   shadeStatusBarColor(color, percent) {
-    const first = parseInt(color.slice(1), 16)
-    const black = first & 0x0000ff
-    const green = (first >> 8) & 0x00ff
-    const percentage = percent < 0 ? percent * -1 : percent
-    const red = first >> 16
-    const theme = percent < 0 ? 0 : 255
+    const first = parseInt(color.slice(1), 16);
+    const black = first & 0x0000ff;
+    const green = (first >> 8) & 0x00ff;
+    const percentage = percent < 0 ? percent * -1 : percent;
+    const red = first >> 16;
+    const theme = percent < 0 ? 0 : 255;
     const finalColor = (0x1000000 +
       (Math.round((theme - red) * percentage) + red) * 0x10000 +
       (Math.round((theme - green) * percentage) + green) * 0x100 +
       (Math.round((theme - black) * percentage) + black)
     )
       .toString(16)
-      .slice(1)
+      .slice(1);
 
-    return `#${finalColor}`
+    return `#${finalColor}`;
   }
 
   isToTintStatusBar() {
@@ -320,23 +323,23 @@ export default class AppIntro extends Component {
       this.props.pageArray &&
       this.props.pageArray.length > 0 &&
       Platform.OS === 'android'
-    )
+    );
   }
 
   render() {
-    const childrens = this.props.children
-    const { pageArray } = this.props
-    let pages = []
-    let androidPages = null
+    const childrens = this.props.children;
+    const { pageArray } = this.props;
+    let pages = [];
+    let androidPages = null;
     if (pageArray.length > 0) {
-      pages = pageArray.map((page, i) => this.renderBasicSlidePage(i, page))
+      pages = pageArray.map((page, i) => this.renderBasicSlidePage(i, page));
     } else {
       if (Platform.OS === 'ios') {
-        pages = childrens.map((children, i) => this.renderChild(children, i, i))
+        pages = childrens.map((children, i) => this.renderChild(children, i, i));
       } else {
         androidPages = childrens.map((children, i) => {
-          const { transform } = this.getTransform(i, -windowsWidth / 3 * 2, 1)
-          pages.push(<View key={i} />)
+          const { transform } = this.getTransform(i, -windowsWidth / 3 * 2, 1);
+          pages.push(<View key={i} />);
           return (
             <Animated.View
               key={i}
@@ -354,8 +357,8 @@ export default class AppIntro extends Component {
             >
               {this.renderChild(children, i, i)}
             </Animated.View>
-          )
-        })
+          );
+        });
       }
     }
 
@@ -363,7 +366,7 @@ export default class AppIntro extends Component {
       StatusBar.setBackgroundColor(
         this.shadeStatusBarColor(this.props.pageArray[0].backgroundColor, -0.3),
         false
-      )
+      );
     }
 
     return (
@@ -381,17 +384,17 @@ export default class AppIntro extends Component {
                   -0.3
                 ),
                 false
-              )
+              );
             }
 
-            this.props.onSlideChange(state.index, state.total)
+            this.props.onSlideChange(state.index, state.total);
           }}
           onScroll={Animated.event([{ x: this.state.parallax }])}
         >
           {pages}
         </Swiper>
       </View>
-    )
+    );
   }
 }
 
@@ -414,7 +417,7 @@ AppIntro.propTypes = {
   showDoneButton: PropTypes.bool,
   showDots: PropTypes.bool,
   tintStatusBarColor: PropTypes.bool
-}
+};
 
 AppIntro.defaultProps = {
   dotColor: 'rgba(255,255,255,.3)',
@@ -434,4 +437,4 @@ AppIntro.defaultProps = {
   showDoneButton: true,
   showDots: true,
   tintStatusBarColor: true
-}
+};
